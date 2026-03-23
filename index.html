@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="description" content="CyberFrench — AI-powered dissertation assistant. Generate, structure and score academic essays instantly."/>
+<title>CyberFrench — Assistant Dissertation IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+/* RESET & ROOT */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c:#6366f1;--c2:#f43f5e;--c3:#10b981;--c4:#f59e0b;
+  --cg:rgba(99,102,241,.1);--cg2:rgba(99,102,241,.05);
+  --bg:#f8fafc;--bg2:#f1f5f9;--bg3:#e2e8f0;
+  --card:#ffffff;--border:rgba(99,102,241,.2);--border2:rgba(15,23,42,.08);
+  --text:#1e293b;--sub:#64748b;--muted:#94a3b8;
+  --serif:'Syne',sans-serif;--mono:'IBM Plex Mono',monospace;--body:'Instrument Sans',sans-serif;
+  --r:16px;--r2:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 32px rgba(99,102,241,.15);
+}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{
+  min-height:100vh;background:var(--bg);color:var(--text);
+  font-family:var(--body);overflow-x:hidden;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 0% 0%,rgba(99,102,241,.07) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 100%,rgba(244,63,94,.04) 0%,transparent 55%);
+}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--c);border-radius:3px}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes slideIn{from{transform:translateX(-20px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes barFill{from{width:0}to{width:var(--w)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.fu{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) forwards}
+.fu2{animation:fadeUp .5s .1s cubic-bezier(.22,1,.36,1) both}
+.fu3{animation:fadeUp .5s .2s cubic-bezier(.22,1,.36,1) both}
+.scanline{display:none}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(248,250,252,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);box-shadow:0 1px 0 rgba(0,0,0,.05)}
+.nav-inner{max-width:960px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:58px;gap:12px}
+.nav-logo{font-family:var(--serif);font-size:20px;font-weight:800;color:var(--text);cursor:pointer;letter-spacing:-.5px;display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
+.nav-logo .cyber{background:linear-gradient(135deg,var(--c),#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-logo .dot{width:8px;height:8px;background:linear-gradient(135deg,var(--c),var(--c2));border-radius:50%;animation:pulse 2s ease infinite}
+.nav-center{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1;justify-content:center}
+.nav-center::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;font-size:12px;font-family:var(--body);font-weight:500;color:var(--sub);transition:all .2s;white-space:nowrap;letter-spacing:.02em;display:flex;align-items:center;gap:5px}
+.tab:hover{color:var(--text);background:var(--bg2)}
+.tab.active{color:var(--c);background:var(--cg);font-weight:600}
+.tab .ti{font-size:14px}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.lang-btn{background:var(--cg);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;font-family:var(--mono);font-weight:600;color:var(--c);cursor:pointer;transition:all .2s;letter-spacing:.06em}
+.lang-btn:hover{background:rgba(99,102,241,.18)}
+
+/* HERO */
+.hero{text-align:center;padding:56px 20px 40px;position:relative;z-index:1;max-width:960px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--cg);border:1px solid var(--border);border-radius:50px;padding:6px 16px;font-family:var(--mono);font-size:11px;color:var(--c);margin-bottom:24px;letter-spacing:.06em}
+.hero-badge .dot{width:6px;height:6px;background:var(--c);border-radius:50%;animation:pulse 1.5s ease infinite}
+.hero-title{font-family:var(--serif);font-size:clamp(22px,8vw,56px);font-weight:800;line-height:1.1;letter-spacing:-1px;color:var(--text);margin-bottom:16px;overflow:visible;word-break:break-word;white-space:normal;max-width:100%}
+.hero-title .cyber{background:linear-gradient(135deg,var(--c),#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-title .accent{color:var(--c2)}
+.hero-sub{font-size:clamp(14px,2vw,17px);color:var(--sub);max-width:520px;margin:0 auto 32px;line-height:1.65}
+.hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:8px}
+.stat{text-align:center}
+.stat-n{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--c)}
+.stat-l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+
+/* MAIN */
+main{max-width:960px;margin:0 auto;padding:0 16px 100px;position:relative;z-index:1}
+.panel{display:none}.panel.active{display:block}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:24px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--c),var(--c2),var(--c3));opacity:.8}
+.card+.card{margin-top:12px}
+
+/* SECTION LABEL */
+.lbl{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--c);margin-bottom:12px}
+.lbl::before{content:'◆';color:var(--c);font-size:8px;opacity:.6}
+.sec{margin-bottom:22px}
+
+/* MODE GRID */
+.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mode-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:14px 12px;cursor:pointer;text-align:left;transition:all .25s;color:var(--text);position:relative;overflow:hidden}
+.mode-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(99,102,241,.08),transparent);opacity:0;transition:opacity .25s}
+.mode-btn:hover::after,.mode-btn.active::after{opacity:1}
+.mode-btn:hover,.mode-btn.active{border-color:var(--c);transform:translateY(-1px);box-shadow:var(--shadow)}
+.mode-btn.active{background:rgba(99,102,241,.06)}
+.mode-icon{font-size:20px;margin-bottom:6px;display:block;animation:float 4s ease infinite}
+.mode-name{display:block;font-family:var(--serif);font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.mode-desc{display:block;font-size:11px;color:var(--muted)}
+
+/* INPUTS */
+textarea,input[type=text]{width:100%;background:var(--bg2);border:1.5px solid var(--border2);border-radius:var(--r2);padding:14px;color:var(--text);font-size:14px;font-family:var(--body);resize:vertical;line-height:1.65;transition:border-color .2s,box-shadow .2s,background .2s;-webkit-appearance:none}
+textarea:focus,input[type=text]:focus{outline:none;border-color:var(--c);background:#fff;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+textarea::placeholder,input::placeholder{color:var(--muted)}
+
+/* PILLS / CHIPS */
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+.pill{background:var(--bg2);border:1.5px solid var(--border2);border-radius:50px;padding:6px 14px;cursor:pointer;font-size:12px;color:var(--sub);font-family:var(--body);transition:all .2s;-webkit-appearance:none}
+.pill:hover,.pill.active{background:var(--cg);border-color:var(--c);color:var(--c);font-weight:600}
+.chip{background:var(--bg2);border:1.5px solid var(--border2);border-radius:7px;padding:6px 12px;cursor:pointer;font-size:12px;color:var(--sub);font-family:var(--mono);transition:all .2s;-webkit-appearance:none}
+.chip:hover,.chip.active{background:var(--cg);border-color:var(--c);color:var(--c)}
+
+/* GRID LAYOUTS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* CTA BUTTONS */
+.cta{width:100%;background:linear-gradient(135deg,var(--c),#818cf8);color:#fff;border:none;border-radius:var(--r2);padding:15px;font-size:14px;font-weight:700;font-family:var(--serif);cursor:pointer;letter-spacing:.02em;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 20px rgba(99,102,241,.3);-webkit-appearance:none}
+.cta:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 32px rgba(99,102,241,.4)}
+.cta:active:not(:disabled){transform:translateY(0)}
+.cta:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.5)}
+.cta-ghost{background:#fff;border:1.5px solid var(--c);color:var(--c);box-shadow:none}
+.cta-ghost:hover:not(:disabled){background:var(--cg);box-shadow:0 4px 20px rgba(99,102,241,.15)}
+.cta-red{background:linear-gradient(135deg,var(--c2),#e11d48);color:#fff}
+.cta-red:hover:not(:disabled){box-shadow:0 8px 32px rgba(244,63,94,.35)}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.spinner-c{border-color:rgba(99,102,241,.2);border-top-color:var(--c)}
+
+/* ERROR */
+.err{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.2);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--c2);margin-bottom:14px;display:none}
+
+/* RESULT */
+.res-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.res-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--text)}
+.res-meta{font-family:var(--mono);font-size:10px;color:var(--sub);margin-top:4px;letter-spacing:.06em}
+.btn-row{display:flex;gap:7px;flex-wrap:wrap}
+.btn{background:var(--cg);border:1px solid var(--border);border-radius:7px;padding:8px 14px;font-size:12px;color:var(--c);cursor:pointer;font-family:var(--mono);transition:all .2s;white-space:nowrap;-webkit-appearance:none}
+.btn:hover{background:rgba(99,102,241,.18);transform:translateY(-1px)}
+.btn-ghost-sm{background:var(--bg2);border:1px solid var(--border2);border-radius:7px;padding:8px 14px;font-size:12px;color:var(--sub);cursor:pointer;font-family:var(--mono);transition:all .2s;-webkit-appearance:none}
+.btn-ghost-sm:hover{color:var(--text);background:var(--bg3)}
+.hline{height:1px;background:linear-gradient(90deg,var(--c),transparent);margin-bottom:22px;opacity:.3}
+
+/* PROSE */
+.prose{line-height:1.9}
+.prose h3{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--c);margin-top:22px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.prose h3::before{content:'▸';font-size:10px;opacity:.6}
+.prose p{font-size:14px;color:var(--sub);margin-bottom:10px;text-align:justify;line-height:1.85}
+
+/* SCORE */
+.score-ring{width:120px;height:120px;border-radius:50%;margin:0 auto 12px;background:conic-gradient(var(--c) var(--p,0%), var(--bg2) 0%);display:flex;align-items:center;justify-content:center;position:relative;box-shadow:var(--shadow-lg)}
+.score-ring::before{content:'';position:absolute;inset:10px;border-radius:50%;background:var(--card)}
+.score-n{font-family:var(--serif);font-size:32px;font-weight:800;color:var(--c);z-index:1;line-height:1}
+.score-n span{font-size:14px;color:var(--sub)}
+.score-mention{font-family:var(--mono);font-size:12px;color:var(--c);text-align:center;letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
+.crit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.crit{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:13px}
+.crit-name{font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.crit-val{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--c)}
+.crit-bar{height:4px;background:var(--bg3);border-radius:2px;margin:6px 0}
+.crit-fill{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--c),#818cf8);animation:barFill .8s ease forwards}
+.crit-txt{font-size:11px;color:var(--muted)}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.tag-g{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--c3)}
+.tag-r{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.2);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--c2)}
+.tip-box{background:rgba(99,102,241,.05);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:13px;color:var(--sub);margin-top:14px;line-height:1.6}
+.tip-box strong{color:var(--c)}
+
+/* SUBJECTS */
+.subj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.subj-card{background:var(--card);border:1.5px solid var(--border2);border-radius:12px;padding:15px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.subj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--c2));opacity:0;transition:opacity .25s}
+.subj-card:hover::before{opacity:1}
+.subj-card:hover{border-color:var(--border);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.subj-txt{font-size:13px;color:var(--text);line-height:1.5;margin-bottom:10px}
+.subj-foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.diff{font-family:var(--mono);font-size:10px;letter-spacing:.06em}
+.diff-e{color:var(--c3)}.diff-m{color:var(--c)}.diff-h{color:var(--c2)}
+.subj-theme{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.use-btn{background:var(--cg);border:1px solid var(--border);border-radius:5px;padding:4px 9px;font-size:11px;color:var(--c);cursor:pointer;font-family:var(--mono);transition:all .2s;-webkit-appearance:none}
+.use-btn:hover{background:rgba(99,102,241,.18)}
+
+/* TIMER */
+.timer-wrap{text-align:center;padding:10px 0}
+.timer-num{font-family:var(--mono);font-size:clamp(52px,12vw,80px);font-weight:500;color:var(--c);letter-spacing:4px;transition:color .3s}
+.timer-num.warn{color:var(--c2);animation:pulse .8s ease infinite}
+.timer-controls{display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap}
+.tbtn{background:var(--bg2);border:1.5px solid var(--border2);border-radius:9px;padding:10px 20px;font-size:13px;color:var(--text);cursor:pointer;font-family:var(--body);transition:all .2s;-webkit-appearance:none}
+.tbtn:hover{background:var(--bg3);border-color:var(--c);color:var(--c)}
+.preset-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.preset{background:transparent;border:1.5px solid var(--border2);border-radius:6px;padding:6px 13px;font-size:12px;color:var(--sub);cursor:pointer;font-family:var(--mono);transition:all .2s;-webkit-appearance:none}
+.preset:hover{border-color:var(--c);color:var(--c);background:var(--cg)}
+
+/* HISTORY */
+.hist-empty{text-align:center;padding:48px 20px;color:var(--sub);font-size:14px}
+.hist-empty .big{font-size:40px;margin-bottom:12px;opacity:.4}
+.hist-item{background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:16px;margin-bottom:9px;transition:all .2s;box-shadow:var(--shadow)}
+.hist-item:hover{border-color:var(--border);background:rgba(99,102,241,.02);box-shadow:var(--shadow-lg)}
+.hist-subj{font-size:14px;color:var(--text);font-weight:500;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hist-date{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.hist-badge{background:var(--cg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-family:var(--mono);font-size:10px;color:var(--c);letter-spacing:.04em}
+.hist-actions{display:flex;gap:6px;margin-top:10px}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--text);border-radius:10px;padding:10px 18px;font-size:13px;color:#fff;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;font-family:var(--mono);letter-spacing:.04em;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast .ticon{margin-right:7px}
+
+/* BOTTOM NAV (mobile) */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(248,250,252,.96);backdrop-filter:blur(20px);border-top:1px solid var(--border2);padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
+.bnav-inner{display:flex;justify-content:space-around}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 12px;color:var(--muted);transition:all .2s;font-family:var(--body);-webkit-appearance:none}
+.bnav-btn .bi{font-size:20px}
+.bnav-btn .bl{font-size:10px;letter-spacing:.04em}
+.bnav-btn.active{color:var(--c)}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .mode-grid{grid-template-columns:1fr 1fr}
+  .two-col,.three-col,.crit-grid,.subj-grid{grid-template-columns:1fr}
+  .nav-center{display:none}
+  .bottom-nav{display:block}
+  main{padding-bottom:120px}
+  .hero{padding:36px 16px 24px}
+  .hero-title{font-size:clamp(20px,9vw,36px) !important;letter-spacing:-0.5px}
+  .hero-badge{font-size:10px;padding:5px 12px;white-space:normal;text-align:center;line-height:1.5}
+  .hero-stats{gap:18px}
+  .stat-n{font-size:22px}
+  .card{padding:18px 16px}
+  .btn-row{gap:5px}
+  .btn,.btn-ghost-sm{padding:7px 10px;font-size:11px}
+}
+@media(max-width:360px){.hero-title{font-size:9vw !important;letter-spacing:0px}}
+@media(min-width:641px){.bottom-nav{display:none!important}}
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+<div id="toast"></div>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goHome()">
+      <span class="dot"></span>
+      <span><span class="cyber">Cyber</span>French</span>
+    </a>
+
+    <div class="nav-center" id="navCenter">
+      <button class="tab active" onclick="showPanel('gen')" id="tab-gen">
+        <span class="ti">✦</span><span data-fr="Générer" data-en="Generate">Générer</span>
+      </button>
+      <button class="tab" onclick="showPanel('score')" id="tab-score">
+        <span class="ti">◈</span><span data-fr="Corriger" data-en="Score">Corriger</span>
+      </button>
+      <button class="tab" onclick="showPanel('subjects')" id="tab-subjects">
+        <span class="ti">◎</span><span data-fr="Sujets" data-en="Topics">Sujets</span>
+      </button>
+      <button class="tab" onclick="showPanel('timer')" id="tab-timer">
+        <span class="ti">◷</span><span data-fr="Minuteur" data-en="Timer">Minuteur</span>
+      </button>
+      <button class="tab" onclick="showPanel('history')" id="tab-history">
+        <span class="ti">◫</span><span data-fr="Historique" data-en="History">Historique</span>
+      </button>
+      <button class="tab" onclick="showPanel('image')" id="tab-image">
+        <span class="ti">🎨</span><span data-fr="Image" data-en="Image">Image</span>
+      </button>
+    </div>
+
+    <div class="nav-right">
+      <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero fu" id="heroSection">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    <span data-fr="IA Académique · Propulsé par Groq" data-en="Academic AI · Powered by Groq">IA Académique · Propulsé par Groq</span>
+  </div>
+  <h1 class="hero-title">
+    <span class="cyber">Cyber</span><span class="accent">French</span>
+  </h1>
+  <p class="hero-sub" data-fr="Générez, structurez et notez vos dissertations en quelques secondes grâce à l'intelligence artificielle." data-en="Generate, structure and score your dissertations in seconds with artificial intelligence.">
+    Générez, structurez et notez vos dissertations en quelques secondes grâce à l'intelligence artificielle.
+  </p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">6</div><div class="stat-l" data-fr="Modes" data-en="Modes">Modes</div></div>
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l" data-fr="Matières" data-en="Subjects">Matières</div></div>
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l" data-fr="Niveaux" data-en="Levels">Niveaux</div></div>
+    <div class="stat"><div class="stat-n">FR/EN</div><div class="stat-l" data-fr="Bilingue" data-en="Bilingual">Bilingue</div></div>
+  </div>
+</div>
+
+<main>
+
+<!-- ═══════════ GENERATE ═══════════ -->
+<div class="panel active" id="panel-gen">
+  <div id="gen-form" class="card fu2">
+
+    <!-- Mode grid -->
+    <div class="sec">
+      <div class="lbl" data-fr="Mode de génération" data-en="Generation mode">Mode de génération</div>
+      <div class="mode-grid" id="modeGrid">
+        <button class="mode-btn active" data-mode="complete">
+          <span class="mode-icon">📝</span>
+          <strong class="mode-name" data-fr="Complète" data-en="Full Essay">Complète</strong>
+          <small class="mode-desc" data-fr="Rédaction intégrale" data-en="Full writing">Rédaction intégrale</small>
+        </button>
+        <button class="mode-btn" data-mode="plan">
+          <span class="mode-icon">🗂</span>
+          <strong class="mode-name" data-fr="Plan détaillé" data-en="Detailed Plan">Plan détaillé</strong>
+          <small class="mode-desc" data-fr="Structure + arguments" data-en="Structure + arguments">Structure + arguments</small>
+        </button>
+        <button class="mode-btn" data-mode="problematique">
+          <span class="mode-icon">❓</span>
+          <strong class="mode-name" data-fr="Problématique" data-en="Research Question">Problématique</strong>
+          <small class="mode-desc" data-fr="3 formulations" data-en="3 formulations">3 formulations</small>
+        </button>
+        <button class="mode-btn" data-mode="introduction">
+          <span class="mode-icon">🚪</span>
+          <strong class="mode-name" data-fr="Introduction" data-en="Introduction">Introduction</strong>
+          <small class="mode-desc" data-fr="Accroche → plan" data-en="Hook → plan">Accroche → plan</small>
+        </button>
+        <button class="mode-btn" data-mode="conclusion">
+          <span class="mode-icon">🏁</span>
+          <strong class="mode-name" data-fr="Conclusion" data-en="Conclusion">Conclusion</strong>
+          <small class="mode-desc" data-fr="Bilan + ouverture" data-en="Summary + opening">Bilan + ouverture</small>
+        </button>
+        <button class="mode-btn" data-mode="guide">
+          <span class="mode-icon">🧭</span>
+          <strong class="mode-name" data-fr="Mode guidé" data-en="Guided Mode">Mode guidé</strong>
+          <small class="mode-desc" data-fr="Apprends à rédiger" data-en="Learn to write">Apprends à rédiger</small>
+        </button>
+      </div>
+    </div>
+
+    <!-- Subject -->
+    <div class="sec">
+      <div class="lbl" data-fr="Sujet de dissertation" data-en="Essay subject">Sujet de dissertation</div>
+      <textarea id="subject" rows="3" maxlength="500" data-placeholder-fr="Ex : La liberté est-elle une illusion ? / Le progrès est-il toujours bénéfique ?" data-placeholder-en="Ex: Is freedom an illusion? / Is progress always beneficial?" placeholder="Ex : La liberté est-elle une illusion ? / Le progrès est-il toujours bénéfique ?"></textarea>
+    </div>
+
+    <!-- Type + Level -->
+    <div class="two-col">
+      <div class="sec">
+        <div class="lbl" data-fr="Type" data-en="Type">Type</div>
+        <div class="pills" id="typeGroup">
+          <button class="pill active" data-type="philosophique" data-fr="⚖️ Philo" data-en="⚖️ Philo">⚖️ Philo</button>
+          <button class="pill" data-type="litteraire" data-fr="📖 Litté." data-en="📖 Lit.">📖 Litté.</button>
+          <button class="pill" data-type="economique" data-fr="📊 Éco." data-en="📊 Eco.">📊 Éco.</button>
+          <button class="pill" data-type="historique" data-fr="🏛️ Hist." data-en="🏛️ Hist.">🏛️ Hist.</button>
+          <button class="pill" data-type="scientifique" data-fr="🔬 Sci." data-en="🔬 Sci.">🔬 Sci.</button>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="lbl" data-fr="Niveau" data-en="Level">Niveau</div>
+        <div class="pills" id="levelGroup">
+          <button class="chip active" data-level="college" data-fr="Collège" data-en="Middle School">Collège</button>
+          <button class="chip" data-level="lycee" data-fr="Lycée" data-en="High School">Lycée</button>
+          <button class="chip" data-level="bts" data-fr="BTS/CPGE" data-en="BTS/CPGE">BTS/CPGE</button>
+          <button class="chip" data-level="universite" data-fr="Université" data-en="University">Université</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Length (complete mode only) -->
+    <div class="sec" id="lengthSec">
+      <div class="lbl" data-fr="Longueur cible" data-en="Target length">Longueur cible</div>
+      <div class="pills" id="lengthGroup">
+        <button class="chip" data-length="500">500 <span data-fr="mots" data-en="words">mots</span></button>
+        <button class="chip active" data-length="1000">1 000 <span data-fr="mots" data-en="words">mots</span></button>
+        <button class="chip" data-length="1500">1 500 <span data-fr="mots" data-en="words">mots</span></button>
+        <button class="chip" data-length="2000">2 000 <span data-fr="mots" data-en="words">mots</span></button>
+      </div>
+    </div>
+
+    <!-- Language output -->
+    <div class="sec">
+      <div class="lbl" data-fr="Langue de rédaction" data-en="Writing language">Langue de rédaction</div>
+      <div class="pills" id="outLangGroup">
+        <button class="chip active" data-outlang="fr" data-fr="🇫🇷 Français" data-en="🇫🇷 French">🇫🇷 Français</button>
+        <button class="chip" data-outlang="en" data-fr="🇬🇧 Anglais" data-en="🇬🇧 English">🇬🇧 Anglais</button>
+      </div>
+    </div>
+
+    <div class="err" id="genErr"></div>
+    <button class="cta" id="genBtn" onclick="generate()">
+      <span>✦</span>
+      <span data-fr="Générer ma dissertation" data-en="Generate my essay">Générer ma dissertation</span>
+    </button>
+  </div>
+
+  <!-- Result -->
+  <div id="gen-result" style="display:none" class="card fu">
+    <div class="res-header">
+      <div>
+        <div class="res-title" data-fr="Dissertation générée" data-en="Essay generated">Dissertation générée</div>
+        <div class="res-meta" id="resMeta"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="copyResult()">⎘ <span data-fr="Copier" data-en="Copy">Copier</span></button>
+        <button class="btn" onclick="exportTxt()">⬇ .txt</button>
+        <button class="btn" onclick="exportPdf()">⬇ PDF</button>
+        <button class="btn-ghost-sm" onclick="saveToHistory()">💾</button>
+        <button class="btn-ghost-sm" onclick="resetGen()">↩</button>
+      </div>
+    </div>
+    <div class="hline"></div>
+    <div class="prose" id="proseContent"></div>
+    <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border2)">
+      <button class="cta cta-ghost" onclick="scoreCurrentResult()">
+        ◈ <span data-fr="Corriger cette dissertation" data-en="Score this essay">Corriger cette dissertation</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCORE ═══════════ -->
+<div class="panel" id="panel-score">
+  <div class="card fu">
+    <div class="sec">
+      <div class="lbl" data-fr="Votre texte à corriger" data-en="Text to score">Votre texte à corriger</div>
+      <textarea id="scoreText" rows="10" data-placeholder-fr="Collez votre dissertation ici..." data-placeholder-en="Paste your essay here..." placeholder="Collez votre dissertation ici..."></textarea>
+    </div>
+    <div class="two-col">
+      <div class="sec">
+        <div class="lbl" data-fr="Sujet (optionnel)" data-en="Subject (optional)">Sujet (optionnel)</div>
+        <input type="text" id="scoreSubject" data-placeholder-fr="Le sujet de votre dissertation..." data-placeholder-en="Your essay subject..." placeholder="Le sujet de votre dissertation..."/>
+      </div>
+      <div class="sec">
+        <div class="lbl" data-fr="Niveau" data-en="Level">Niveau</div>
+        <div class="pills" id="scoreLevelGroup">
+          <button class="chip" data-slevel="college" data-fr="Collège" data-en="Middle">Collège</button>
+          <button class="chip active" data-slevel="lycee" data-fr="Lycée" data-en="High School">Lycée</button>
+          <button class="chip" data-slevel="bts" data-fr="BTS/CPGE" data-en="BTS/CPGE">BTS/CPGE</button>
+          <button class="chip" data-slevel="universite" data-fr="Univ." data-en="Univ.">Univ.</button>
+        </div>
+      </div>
+    </div>
+    <div class="err" id="scoreErr"></div>
+    <button class="cta" id="scoreBtn" onclick="scoreDisser()">
+      ◈ <span data-fr="Analyser et noter" data-en="Analyse and score">Analyser et noter</span>
+    </button>
+  </div>
+
+  <div id="score-result" style="display:none" class="card fu">
+    <div class="score-ring" id="scoreRing">
+      <div class="score-n" id="scoreNote">—<span>/20</span></div>
+    </div>
+    <div class="score-mention" id="scoreMention"></div>
+    <div class="hline"></div>
+    <div class="lbl" data-fr="Critères détaillés" data-en="Detailed criteria">Critères détaillés</div>
+    <div class="crit-grid" id="critGrid"></div>
+    <div style="margin-top:14px">
+      <div class="lbl" data-fr="Points forts" data-en="Strengths">Points forts</div>
+      <div class="tag-row" id="tagsForts"></div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="lbl" data-fr="À améliorer" data-en="To improve">À améliorer</div>
+      <div class="tag-row" id="tagsAmelio"></div>
+    </div>
+    <div class="tip-box" id="tipBox"></div>
+    <div style="margin-top:14px">
+      <button class="cta cta-ghost" onclick="resetScore()">
+        ↩ <span data-fr="Corriger un autre texte" data-en="Score another text">Corriger un autre texte</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SUBJECTS ═══════════ -->
+<div class="panel" id="panel-subjects">
+  <div class="card fu">
+    <div class="three-col">
+      <div class="sec">
+        <div class="lbl" data-fr="Type" data-en="Type">Type</div>
+        <div class="pills" id="subjTypeGroup">
+          <button class="pill active" data-stype="philosophique">⚖️ Philo</button>
+          <button class="pill" data-stype="litteraire">📖 Litté.</button>
+          <button class="pill" data-stype="economique">📊 Éco.</button>
+          <button class="pill" data-stype="historique">🏛️ Hist.</button>
+          <button class="pill" data-stype="scientifique">🔬 Sci.</button>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="lbl" data-fr="Niveau" data-en="Level">Niveau</div>
+        <div class="pills" id="subjLevelGroup">
+          <button class="chip" data-sjlevel="college" data-fr="Collège" data-en="Middle">Collège</button>
+          <button class="chip active" data-sjlevel="lycee" data-fr="Lycée" data-en="High">Lycée</button>
+          <button class="chip" data-sjlevel="bts">BTS/CPGE</button>
+          <button class="chip" data-sjlevel="universite" data-fr="Univ." data-en="Univ.">Univ.</button>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="lbl" data-fr="Thème libre" data-en="Free theme">Thème libre</div>
+        <input type="text" id="subjTheme" data-placeholder-fr="Ex : liberté, société..." data-placeholder-en="Ex: freedom, society..." placeholder="Ex : liberté, société..."/>
+      </div>
+    </div>
+    <div class="err" id="subjErr"></div>
+    <button class="cta" id="subjBtn" onclick="generateSubjects()">
+      ◎ <span data-fr="Générer 6 sujets" data-en="Generate 6 topics">Générer 6 sujets</span>
+    </button>
+  </div>
+
+  <div id="subj-result" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:14px 0 8px">
+      <div class="lbl" style="margin:0" data-fr="Sujets générés" data-en="Generated topics">Sujets générés</div>
+      <button class="btn-ghost-sm" onclick="generateSubjects()">↺ <span data-fr="Régénérer" data-en="Regenerate">Régénérer</span></button>
+    </div>
+    <div class="subj-grid" id="subjGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════ TIMER ═══════════ -->
+<div class="panel" id="panel-timer">
+  <div class="card fu">
+    <div class="timer-wrap">
+      <div class="timer-num" id="timerNum">00:00</div>
+    </div>
+    <div class="timer-controls">
+      <button class="tbtn" onclick="timerStart()">▶ <span data-fr="Démarrer" data-en="Start">Démarrer</span></button>
+      <button class="tbtn" onclick="timerPause()">⏸ <span data-fr="Pause" data-en="Pause">Pause</span></button>
+      <button class="tbtn" onclick="timerReset()">↺ Reset</button>
+    </div>
+    <div class="preset-row">
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);align-self:center;letter-spacing:.06em" data-fr="DURÉE :" data-en="DURATION :">DURÉE :</span>
+      <button class="preset" onclick="setTimer(30)">30 min</button>
+      <button class="preset" onclick="setTimer(45)">45 min</button>
+      <button class="preset" onclick="setTimer(60)">1h</button>
+      <button class="preset" onclick="setTimer(90)">1h30</button>
+      <button class="preset" onclick="setTimer(120)">2h</button>
+      <button class="preset" onclick="setTimer(240)" data-fr="4h (Bac)" data-en="4h (Exam)">4h (Bac)</button>
+    </div>
+    <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border2)">
+      <div class="lbl" data-fr="Brouillon / Notes" data-en="Draft / Notes">Brouillon / Notes</div>
+      <textarea id="timerNotes" rows="6" data-placeholder-fr="Zone de brouillon libre — plan rapide, idées, citations..." data-placeholder-en="Free draft space — quick outline, ideas, quotes..." placeholder="Zone de brouillon libre — plan rapide, idées, citations..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ HISTORY ═══════════ -->
+<div class="panel" id="panel-history">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <span id="histCount" style="font-family:var(--mono);font-size:11px;color:var(--sub)"></span>
+    <button class="btn-ghost-sm" onclick="clearHistory()">🗑 <span data-fr="Effacer tout" data-en="Clear all">Effacer tout</span></button>
+  </div>
+  <div id="histList"></div>
+</div>
+
+
+<!-- ═══ PANEL IMAGE ═══ -->
+<div class="panel" id="panel-image">
+  <div class="card fu">
+    <div class="lbl" data-fr="Générateur d'image IA" data-en="AI Image Generator">Générateur d'image IA</div>
+    <div class="sec">
+      <textarea id="imgPrompt" rows="3" placeholder="Décris l'image que tu veux générer... ex: Un étudiant concentré dans une bibliothèque moderne, style aquarelle"></textarea>
+    </div>
+    <div class="sec">
+      <div class="lbl">Style</div>
+      <div class="pills" id="imgStylePills">
+        <button class="pill active" data-val="realistic">📷 Réaliste</button>
+        <button class="pill" data-val="cartoon">🎨 Cartoon</button>
+        <button class="pill" data-val="watercolor">💧 Aquarelle</button>
+        <button class="pill" data-val="sketch">✏️ Croquis</button>
+        <button class="pill" data-val="oil">🖼️ Peinture à l'huile</button>
+        <button class="pill" data-val="digital">💻 Digital Art</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="lbl">Taille</div>
+      <div class="pills" id="imgSizePills">
+        <button class="pill active" data-val="1024x1024">⬜ Carré</button>
+        <button class="pill" data-val="1792x1024">📺 Paysage</button>
+        <button class="pill" data-val="1024x1792">📱 Portrait</button>
+      </div>
+    </div>
+    <div class="err" id="imgErr"></div>
+    <button class="cta" id="imgBtn" onclick="generateImage()">
+      <span>🎨</span><span data-fr="Générer l'image" data-en="Generate image">Générer l'image</span>
+    </button>
+  </div>
+
+  <div class="card fu2" id="imgResult" style="display:none">
+    <div class="res-header">
+      <div>
+        <div class="res-title" data-fr="Image générée" data-en="Generated Image">Image générée ✨</div>
+        <div class="res-meta" id="imgMeta"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="downloadImage()">⬇ Télécharger</button>
+        <button class="btn-ghost-sm" onclick="resetImage()">↺ Nouveau</button>
+      </div>
+    </div>
+    <div style="text-align:center;border-radius:12px;overflow:hidden;background:var(--bg2);padding:8px">
+      <img id="imgOutput" src="" alt="Image générée" style="max-width:100%;border-radius:8px;display:block;margin:0 auto"/>
+    </div>
+    <div style="margin-top:14px;padding:12px;background:var(--bg2);border-radius:10px;font-size:12px;color:var(--sub);font-family:var(--mono)" id="imgPromptDisplay"></div>
+  </div>
+</div>
+</main>
+
+<!-- Bottom nav (mobile) -->
+<div class="bottom-nav">
+  <div class="bnav-inner">
+    <button class="bnav-btn active" onclick="showPanel('gen')" id="bnav-gen">
+      <span class="bi">✦</span><span class="bl" data-fr="Générer" data-en="Generate">Générer</span>
+    </button>
+    <button class="bnav-btn" onclick="showPanel('score')" id="bnav-score">
+      <span class="bi">◈</span><span class="bl" data-fr="Corriger" data-en="Score">Corriger</span>
+    </button>
+    <button class="bnav-btn" onclick="showPanel('subjects')" id="bnav-subjects">
+      <span class="bi">◎</span><span class="bl" data-fr="Sujets" data-en="Topics">Sujets</span>
+    </button>
+    <button class="bnav-btn" onclick="showPanel('timer')" id="bnav-timer">
+      <span class="bi">◷</span><span class="bl" data-fr="Chrono" data-en="Timer">Chrono</span>
+    </button>
+    <button class="bnav-btn" onclick="showPanel('history')" id="bnav-history">
+      <span class="bi">◫</span><span class="bl" data-fr="Historique" data-en="History">Historique</span>
+    </button>
+    <button class="bnav-btn" onclick="showPanel('image')" id="bnav-image">
+      <span class="bi">🎨</span><span class="bl" data-fr="Image" data-en="Image">Image</span>
+    </button>
+  </div>
+</div>
+
+<div id="printArea" style="display:none"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  LANGUAGE SYSTEM
+// ══════════════════════════════════════════
+let lang = localStorage.getItem("cf_lang") || "fr";
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.getElementById("langBtn").textContent = lang === "fr" ? "EN" : "FR";
+  document.querySelectorAll("[data-fr]").forEach(el => {
+    const val = el.getAttribute("data-" + lang);
+    if (!val) return;
+    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+      el.placeholder = val;
+    } else {
+      el.textContent = val;
+    }
+  });
+  // Placeholders with separate data attrs
+  document.querySelectorAll("[data-placeholder-fr]").forEach(el => {
+    el.placeholder = el.getAttribute("data-placeholder-" + lang) || el.placeholder;
+  });
+}
+
+function toggleLang() {
+  lang = lang === "fr" ? "en" : "fr";
+  localStorage.setItem("cf_lang", lang);
+  applyLang();
+  toast(lang === "fr" ? "🇫🇷 Langue : Français" : "🇬🇧 Language: English");
+}
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let mode = "complete", type = "philosophique", level = "college";
+let length = "1000", outLang = "fr", scoreLevel = "lycee";
+let subjType = "philosophique", subjLevel = "lycee";
+let timerInterval = null, timerSec = 0, timerTarget = 0, timerRunning = false;
+let currentResult = "", currentSubject = "";
+
+// ══════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════
+function showPanel(name) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".bnav-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("panel-" + name).classList.add("active");
+  const tb = document.getElementById("tab-" + name);
+  if (tb) tb.classList.add("active");
+  const bb = document.getElementById("bnav-" + name);
+  if (bb) bb.classList.add("active");
+  if (name === "history") renderHistory();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function goHome() {
+  showPanel("gen");
+  resetGen();
+}
+
+// ══════════════════════════════════════════
+//  TOGGLE HELPERS
+// ══════════════════════════════════════════
+function initGroup(groupId, attr, setter) {
+  document.querySelectorAll(`#${groupId} [${attr}]`).forEach(b => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll(`#${groupId} [${attr}]`).forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      setter(b.getAttribute(attr));
+    });
+  });
+}
+
+initGroup("modeGrid", "data-mode", v => {
+  mode = v;
+  document.getElementById("lengthSec").style.display = v === "complete" ? "" : "none";
+});
+initGroup("typeGroup",   "data-type",    v => type = v);
+initGroup("levelGroup",  "data-level",   v => level = v);
+initGroup("lengthGroup", "data-length",  v => length = v);
+initGroup("outLangGroup","data-outlang", v => outLang = v);
+initGroup("scoreLevelGroup","data-slevel", v => scoreLevel = v);
+initGroup("subjTypeGroup", "data-stype",   v => subjType = v);
+initGroup("subjLevelGroup","data-sjlevel", v => subjLevel = v);
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+// ══════════════════════════════════════════
+//  LABELS
+// ══════════════════════════════════════════
+const modeLabels  = {complete:{fr:"Dissertation complète",en:"Full Essay"},plan:{fr:"Plan détaillé",en:"Detailed Plan"},problematique:{fr:"Problématique",en:"Research Question"},introduction:{fr:"Introduction",en:"Introduction"},conclusion:{fr:"Conclusion",en:"Conclusion"},guide:{fr:"Mode guidé",en:"Guided Mode"}};
+const typeLabels  = {philosophique:{fr:"Philosophique",en:"Philosophy"},litteraire:{fr:"Littéraire",en:"Literature"},economique:{fr:"Économique",en:"Economics"},historique:{fr:"Historique",en:"History"},scientifique:{fr:"Scientifique",en:"Science"}};
+const levelLabels = {college:{fr:"Collège",en:"Middle School"},lycee:{fr:"Lycée",en:"High School"},bts:{fr:"BTS/CPGE",en:"BTS/CPGE"},universite:{fr:"Université",en:"University"}};
+const t = (obj) => obj[lang] || obj.fr;
+
+// ══════════════════════════════════════════
+//  BUILD PROMPT
+// ══════════════════════════════════════════
+function buildPrompt(subject) {
+  const T = t(typeLabels[type]) || type;
+  const L = t(levelLabels[level]) || level;
+  const writeLang = outLang === "en" ? "in English" : "en français";
+
+  if (mode === "problematique") return `Tu es un professeur expert. ${writeLang === "in English" ? "In English," : "En français,"} propose 3 problématiques distinctes pour ce sujet de dissertation ${T}, niveau ${L}.\nSujet : "${subject}"\nNumérote et explique chaque choix en 1-2 phrases.`;
+  if (mode === "plan") return `Rédige un plan détaillé (thèse/antithèse/synthèse) ${writeLang} pour une dissertation ${T} niveau ${L}.\nSujet : "${subject}"\nChaque partie : titre + 2-3 sous-parties avec arguments et exemples.`;
+  if (mode === "guide") return `Tu es un tuteur pédagogique. ${writeLang === "in English" ? "In English," : "En français,"} aide un élève de niveau ${L} à rédiger une dissertation ${T} sur "${subject}". Pose 5 questions guidantes pour l'aider à construire sa réflexion.`;
+  if (mode === "introduction") return `Rédige UNIQUEMENT une introduction parfaite ${writeLang} pour une dissertation ${T} niveau ${L} : "${subject}". Structure : accroche, contexte, problématique, plan.`;
+  if (mode === "conclusion") return `Rédige UNIQUEMENT une conclusion parfaite ${writeLang} pour une dissertation ${T} niveau ${L} : "${subject}". Structure : bilan, synthèse, ouverture.`;
+  return `Rédige une dissertation ${T} complète et académique ${writeLang}.\nNiveau : ${L} | Longueur : ~${length} mots.\nSujet : "${subject}"\nStructure : Introduction, développement (2-3 parties avec transitions), Conclusion. Style soutenu et rigoureux.`;
+}
+
+// ══════════════════════════════════════════
+//  GENERATE
+// ══════════════════════════════════════════
+async function generate() {
+  const subject = document.getElementById("subject").value.trim();
+  const errEl = document.getElementById("genErr");
+  if (!subject) {
+    errEl.textContent = lang === "fr" ? "Veuillez entrer un sujet de dissertation." : "Please enter an essay subject.";
+    errEl.style.display = "block";
+    return;
+  }
+  errEl.style.display = "none";
+  const btn = document.getElementById("genBtn");
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner"></span> ${lang === "fr" ? "Génération en cours..." : "Generating..."}`;
+
+  try {
+    const res = await fetch("/api/generate", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ subject, type, level, length, mode, outLang }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) { errEl.textContent = data.error || "Erreur."; errEl.style.display = "block"; return; }
+    currentResult = data.result; currentSubject = subject;
+    showResult(data.result, subject);
+  } catch(e) {
+    errEl.textContent = lang === "fr" ? "Erreur de connexion." : "Connection error.";
+    errEl.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<span>✦</span><span data-fr="Générer ma dissertation" data-en="Generate my essay">${lang==="fr"?"Générer ma dissertation":"Generate my essay"}</span>`;
+  }
+}
+
+function showResult(text, subject) {
+  document.getElementById("resMeta").textContent =
+    `${t(modeLabels[mode])} · ${t(typeLabels[type])} · ${t(levelLabels[level])} · ${outLang === "fr" ? "🇫🇷" : "🇬🇧"}`;
+  const prose = document.getElementById("proseContent");
+  prose.innerHTML = "";
+  text.split("\n").forEach(line => {
+    if (!line.trim()) { prose.appendChild(document.createElement("br")); return; }
+    const isH = /^#{1,3}\s/.test(line) || /^(I{1,3}|IV|V|VI|[ABC1-9])[.\)]\s/.test(line.trim());
+    const el = document.createElement(isH ? "h3" : "p");
+    el.textContent = line.replace(/^#+\s/,"");
+    prose.appendChild(el);
+  });
+  document.getElementById("gen-form").style.display = "none";
+  const r = document.getElementById("gen-result");
+  r.style.display = "block";
+  r.classList.remove("fu"); void r.offsetWidth; r.classList.add("fu");
+  r.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function resetGen() {
+  document.getElementById("gen-result").style.display = "none";
+  document.getElementById("gen-form").style.display = "block";
+}
+
+// ══════════════════════════════════════════
+//  EXPORT
+// ══════════════════════════════════════════
+function copyResult() {
+  navigator.clipboard.writeText(currentResult);
+  toast("⎘ " + (lang === "fr" ? "Copié !" : "Copied!"));
+}
+function exportTxt() {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([currentResult], {type:"text/plain;charset=utf-8"}));
+  a.download = `cyberfrench_${Date.now()}.txt`;
+  a.click();
+  toast("⬇ .txt");
+}
+function exportPdf() {
+  const w = window.open("","_blank");
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=Instrument+Sans&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Instrument Sans',sans-serif;color:#1a1a2e;max-width:680px;margin:40px auto;padding:40px;line-height:1.8}
+  h1{font-family:'Syne',sans-serif;font-size:26px;margin-bottom:6px;color:#030712}
+  .meta{font-size:11px;color:#888;margin-bottom:28px;padding-bottom:12px;border-bottom:2px solid #00e5ff}
+  h3{font-family:'Syne',sans-serif;font-size:17px;color:#0096d4;margin:20px 0 8px}
+  p{font-size:14px;margin-bottom:10px;text-align:justify}
+  .foot{text-align:center;margin-top:36px;padding-top:14px;border-top:1px solid #eee;font-size:10px;color:#bbb;font-family:monospace}
+</style></head><body>
+<h1>${currentSubject}</h1>
+<p class="meta">CyberFrench · ${document.getElementById("resMeta").textContent} · ${new Date().toLocaleDateString()}</p>
+${document.getElementById("proseContent").innerHTML}
+<div class="foot">Generated by CyberFrench · cyberfrench.app</div>
+</body></html>`);
+  w.document.close();
+  setTimeout(() => w.print(), 500);
+  toast("🖨 PDF");
+}
+
+// ══════════════════════════════════════════
+//  HISTORY
+// ══════════════════════════════════════════
+function saveToHistory() {
+  const hist = JSON.parse(localStorage.getItem("cf_history") || "[]");
+  hist.unshift({ id:Date.now(), date:new Date().toLocaleDateString(), subject:currentSubject, mode, type, level, text:currentResult });
+  if (hist.length > 30) hist.splice(30);
+  localStorage.setItem("cf_history", JSON.stringify(hist));
+  toast("💾 " + (lang === "fr" ? "Sauvegardé !" : "Saved!"));
+}
+
+function renderHistory() {
+  const hist = JSON.parse(localStorage.getItem("cf_history") || "[]");
+  const el = document.getElementById("histList");
+  document.getElementById("histCount").textContent = `${hist.length} ${lang==="fr"?"dissertation(s)":"essay/essays"}`;
+  if (!hist.length) {
+    el.innerHTML = `<div class="hist-empty"><div class="big">◫</div>${lang==="fr"?"Aucune dissertation sauvegardée.<br>Générez et cliquez sur 💾 pour sauvegarder.":"No saved essays.<br>Generate one and click 💾 to save."}</div>`;
+    return;
+  }
+  el.innerHTML = hist.map(e => `
+    <div class="hist-item">
+      <div class="hist-subj">${e.subject}</div>
+      <div class="hist-meta">
+        <span class="hist-date">${e.date}</span>
+        <span class="hist-badge">${t(modeLabels[e.mode]||{fr:e.mode,en:e.mode})}</span>
+        <span class="hist-badge">${t(typeLabels[e.type]||{fr:e.type,en:e.type})}</span>
+        <span class="hist-badge">${t(levelLabels[e.level]||{fr:e.level,en:e.level})}</span>
+      </div>
+      <div class="hist-actions">
+        <button class="btn" onclick="loadHist(${e.id})">📖 ${lang==="fr"?"Relire":"Read"}</button>
+        <button class="btn-ghost-sm" onclick="delHist(${e.id})">🗑</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function loadHist(id) {
+  const hist = JSON.parse(localStorage.getItem("cf_history") || "[]");
+  const e = hist.find(x => x.id === id); if (!e) return;
+  currentResult = e.text; currentSubject = e.subject;
+  mode = e.mode; type = e.type; level = e.level;
+  showPanel("gen"); showResult(e.text, e.subject);
+}
+
+function delHist(id) {
+  const hist = JSON.parse(localStorage.getItem("cf_history") || "[]").filter(x => x.id !== id);
+  localStorage.setItem("cf_history", JSON.stringify(hist));
+  renderHistory(); toast("🗑");
+}
+
+function clearHistory() {
+  if (!confirm(lang==="fr"?"Supprimer tout l'historique ?":"Clear all history?")) return;
+  localStorage.removeItem("cf_history");
+  renderHistory(); toast("🗑 " + (lang==="fr"?"Effacé":"Cleared"));
+}
+
+// ══════════════════════════════════════════
+//  SCORE
+// ══════════════════════════════════════════
+async function scoreDisser() {
+  const text = document.getElementById("scoreText").value.trim();
+  const errEl = document.getElementById("scoreErr");
+  if (!text) {
+    errEl.textContent = lang==="fr"?"Collez une dissertation à corriger.":"Paste an essay to score.";
+    errEl.style.display = "block"; return;
+  }
+  errEl.style.display = "none";
+  const btn = document.getElementById("scoreBtn");
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner spinner-c"></span> ${lang==="fr"?"Analyse en cours...":"Analysing..."}`;
+  try {
+    const res = await fetch("/api/score", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ text, subject: document.getElementById("scoreSubject").value.trim(), level: scoreLevel }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) { errEl.textContent = data.error||"Erreur."; errEl.style.display="block"; return; }
+    showScore(data);
+  } catch(e) {
+    errEl.textContent = lang==="fr"?"Erreur de connexion.":"Connection error.";
+    errEl.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `◈ <span data-fr="Analyser et noter" data-en="Analyse and score">${lang==="fr"?"Analyser et noter":"Analyse and score"}</span>`;
+  }
+}
+
+function showScore(d) {
+  const note = d.note_globale || 0;
+  document.getElementById("scoreNote").innerHTML = `${note}<span>/20</span>`;
+  document.getElementById("scoreRing").style.setProperty("--p", `${(note/20)*360}deg`);
+  document.getElementById("scoreMention").textContent = d.mention || "";
+
+  const critNames = {structure:{fr:"Structure",en:"Structure"},arguments:{fr:"Arguments",en:"Arguments"},style:{fr:"Style",en:"Style"},problematique:{fr:"Problématique",en:"Research Q."},exemples:{fr:"Exemples",en:"Examples"}};
+  document.getElementById("critGrid").innerHTML = Object.entries(d.criteres||{}).map(([k,v]) => `
+    <div class="crit">
+      <div class="crit-name">${lang==="fr"?(critNames[k]?.fr||k):(critNames[k]?.en||k)}</div>
+      <div class="crit-val">${v.note}/20</div>
+      <div class="crit-bar"><div class="crit-fill" style="--w:${v.note/20*100}%"></div></div>
+      <div class="crit-txt">${v.commentaire}</div>
+    </div>
+  `).join("");
+
+  document.getElementById("tagsForts").innerHTML = (d.points_forts||[]).map(p=>`<span class="tag-g">✓ ${p}</span>`).join("");
+  document.getElementById("tagsAmelio").innerHTML = (d.points_ameliorer||[]).map(p=>`<span class="tag-r">→ ${p}</span>`).join("");
+  document.getElementById("tipBox").innerHTML = `<strong>💡 ${lang==="fr"?"Conseil :" : "Tip:"}</strong> ${d.conseil_principal}`;
+
+  const r = document.getElementById("score-result");
+  r.style.display = "block";
+  r.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function resetScore() {
+  document.getElementById("score-result").style.display = "none";
+  document.getElementById("scoreText").value = "";
+  document.getElementById("scoreSubject").value = "";
+}
+
+function scoreCurrentResult() {
+  showPanel("score");
+  document.getElementById("scoreText").value = currentResult;
+  document.getElementById("scoreSubject").value = currentSubject;
+}
+
+// ══════════════════════════════════════════
+//  SUBJECTS
+// ══════════════════════════════════════════
+async function generateSubjects() {
+  const errEl = document.getElementById("subjErr");
+  errEl.style.display = "none";
+  const btn = document.getElementById("subjBtn");
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner spinner-c"></span> ${lang==="fr"?"Génération...":"Generating..."}`;
+  try {
+    const res = await fetch("/api/subjects", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ type: subjType, level: subjLevel, theme: document.getElementById("subjTheme").value.trim(), lang }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) { errEl.textContent=data.error||"Erreur."; errEl.style.display="block"; return; }
+    showSubjects(data.subjects||[]);
+  } catch(e) {
+    errEl.textContent = lang==="fr"?"Erreur de connexion.":"Connection error.";
+    errEl.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `◎ <span>${lang==="fr"?"Générer 6 sujets":"Generate 6 topics"}</span>`;
+  }
+}
+
+const diffClass = {Facile:"diff-e",Moyen:"diff-m",Difficile:"diff-h",Easy:"diff-e",Medium:"diff-m",Hard:"diff-h"};
+
+function showSubjects(subjects) {
+  document.getElementById("subjGrid").innerHTML = subjects.map(s => `
+    <div class="subj-card">
+      <div class="subj-txt">${s.sujet || s.subject}</div>
+      <div class="subj-foot">
+        <span class="${diffClass[s.difficulte||s.difficulty]||'diff-m'}">● ${s.difficulte||s.difficulty||"Moyen"}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="subj-theme">${s.theme||""}</span>
+          <button class="use-btn" onclick="useSubject(this.dataset.subj)" data-subj="${(s.sujet||s.subject||"").replace(/"/g,'&quot;')}">→ ${lang==="fr"?"Utiliser":"Use"}</button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+  document.getElementById("subj-result").style.display = "block";
+  document.getElementById("subj-result").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function useSubject(subj) {
+  showPanel("gen");
+  document.getElementById("subject").value = subj;
+  toast("✓ " + (lang==="fr"?"Sujet importé !":"Topic imported!"));
+}
+
+// ══════════════════════════════════════════
+//  TIMER
+// ══════════════════════════════════════════
+function fmt(s) {
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+  if(h>0) return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+  return `${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+}
+
+function updateTimer() {
+  const rem = timerTarget > 0 ? timerTarget - timerSec : timerSec;
+  const el = document.getElementById("timerNum");
+  el.textContent = fmt(Math.max(0, rem));
+  el.classList.toggle("warn", timerTarget > 0 && rem <= 300 && rem > 0);
+  if (timerTarget > 0 && timerSec >= timerTarget) {
+    timerPause(); el.textContent = "00:00";
+    toast("⏱ " + (lang==="fr"?"Temps écoulé !":"Time's up!"));
+  }
+}
+
+function setTimer(min) {
+  timerPause(); timerSec = 0; timerTarget = min * 60; updateTimer();
+  toast(`⏱ ${min < 60 ? min + "min" : (min/60) + "h"}`);
+}
+function timerStart() {
+  if (timerRunning) return;
+  timerRunning = true;
+  timerInterval = setInterval(() => { timerSec++; updateTimer(); }, 1000);
+}
+function timerPause() {
+  timerRunning = false; clearInterval(timerInterval);
+}
+function timerReset() {
+  timerPause(); timerSec = 0; updateTimer();
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+applyLang();
+
+// ══════════════════════════════════════════
+//  IMAGE GENERATOR (Canvas API)
+// ══════════════════════════════════════════
+let currentImgStyle = 'realistic';
+let currentImgSize  = '1024x1024';
+let currentImgUrl   = null;
+
+initGroup('imgStylePills', null, v => currentImgStyle = v);
+initGroup('imgSizePills',  null, v => currentImgSize  = v);
+
+async function generateImage() {
+  const prompt = document.getElementById('imgPrompt').value.trim();
+  const errEl  = document.getElementById('imgErr');
+  const btn    = document.getElementById('imgBtn');
+  errEl.style.display = 'none';
+
+  if (!prompt) {
+    errEl.textContent = L === 'fr' ? 'Décris l'image à générer.' : 'Please describe the image.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const styleMap = {
+    realistic: 'photorealistic, high quality, sharp details',
+    cartoon:   'cartoon style, colorful, flat illustration',
+    watercolor:'watercolor painting, soft colors, artistic',
+    sketch:    'pencil sketch, black and white, hand drawn',
+    oil:       'oil painting, rich textures, classical art style',
+    digital:   'digital art, vibrant colors, modern illustration'
+  };
+
+  const fullPrompt = `${prompt}, ${styleMap[currentImgStyle] || ''}`;
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div><span>' + (L === 'fr' ? 'Génération en cours...' : 'Generating...') + '</span>';
+
+  try {
+    // Générer via Canvas API (rendu local + prompt affiché)
+    const canvas = document.createElement('canvas');
+    const [w, h]  = currentImgSize.split('x').map(Number);
+    canvas.width  = Math.min(w, 512);
+    canvas.height = Math.min(h, 512);
+    const ctx = canvas.getContext('2d');
+
+    // Dégradé de fond basé sur le style
+    const gradients = {
+      realistic: ['#667eea','#764ba2'],
+      cartoon:   ['#f093fb','#f5576c'],
+      watercolor:['#4facfe','#00f2fe'],
+      sketch:    ['#a8edea','#fed6e3'],
+      oil:       ['#d299c2','#fef9d7'],
+      digital:   ['#89f7fe','#66a6ff'],
+    };
+    const [c1, c2] = gradients[currentImgStyle] || ['#6366f1','#818cf8'];
+    const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    grad.addColorStop(0, c1);
+    grad.addColorStop(1, c2);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Overlay semi-transparent
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Icône style au centre
+    const icons = { realistic:'📷', cartoon:'🎨', watercolor:'💧', sketch:'✏️', oil:'🖼️', digital:'💻' };
+    ctx.font = `${Math.floor(canvas.width * 0.18)}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(icons[currentImgStyle] || '🎨', canvas.width / 2, canvas.height * 0.38);
+
+    // Texte du prompt (wrapped)
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    const fontSize = Math.max(11, Math.floor(canvas.width * 0.032));
+    ctx.font = `600 ${fontSize}px 'Instrument Sans', sans-serif`;
+    ctx.textBaseline = 'top';
+    const words = prompt.split(' ');
+    const maxW   = canvas.width * 0.82;
+    let line = '', lines = [];
+    for (const w of words) {
+      const test = line + w + ' ';
+      if (ctx.measureText(test).width > maxW && line) { lines.push(line.trim()); line = w + ' '; }
+      else line = test;
+    }
+    if (line.trim()) lines.push(line.trim());
+    lines = lines.slice(0, 4);
+    const lineH  = fontSize * 1.5;
+    const startY = canvas.height * 0.6;
+    lines.forEach((l, i) => ctx.fillText(l, canvas.width / 2, startY + i * lineH));
+
+    // Watermark
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = `${Math.max(9, Math.floor(canvas.width * 0.022))}px monospace`;
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('CyberFrench · ' + currentImgStyle, canvas.width / 2, canvas.height - 8);
+
+    currentImgUrl = canvas.toDataURL('image/png');
+    document.getElementById('imgOutput').src = currentImgUrl;
+    document.getElementById('imgPromptDisplay').textContent = '✦ ' + fullPrompt;
+    document.getElementById('imgMeta').textContent = currentImgSize + ' · ' + currentImgStyle;
+    document.getElementById('imgResult').style.display = 'block';
+    showToast('✅ Image générée !');
+
+  } catch (e) {
+    errEl.textContent = 'Erreur : ' + e.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>🎨</span><span>' + (L === 'fr' ? "Générer l'image" : 'Generate image') + '</span>';
+  }
+}
+
+function downloadImage() {
+  if (!currentImgUrl) return;
+  const a = document.createElement('a');
+  a.href = currentImgUrl;
+  a.download = 'cyberfrench-image.png';
+  a.click();
+  showToast('⬇ Image téléchargée !');
+}
+
+function resetImage() {
+  document.getElementById('imgResult').style.display = 'none';
+  document.getElementById('imgPrompt').value = '';
+  currentImgUrl = null;
+}
+
+</script>
+</body>
+</html>
